@@ -5,18 +5,10 @@
 // Base error class for all user-related errors
 export class UserError extends Error {
     statusCode: number;
-    constructor(message: string, statusCode: number = 500) {
+    constructor(message: string, statusCode: number) {
         super(message);
         this.statusCode = statusCode;
         this.name = 'UserError';
-    }
-}
-
-// Validation errors for user input
-export class UserValidationError extends UserError {
-    constructor(message: string) {
-        super(message, 400);
-        this.name = 'UserValidationError';
     }
 }
 

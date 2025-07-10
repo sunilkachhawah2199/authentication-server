@@ -32,7 +32,7 @@ export const uploadPdfController = async (req: Request, res: Response): Promise<
         })
     } catch (error: any) {
         console.error("Error during S3 upload:", error);
-        res.status(500).json({
+        res.status(error.statusCode || 500).json({
             error: "Failed to upload files to cloud",
             message: error.message,
         });

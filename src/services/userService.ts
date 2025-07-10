@@ -1,14 +1,14 @@
 import { generateToken } from "../middleware/authMiddleware";
 import { findByEMail, insertUser, IUserLogin, IUserRegister, User } from "../models/userModel";
 import {
-    UserValidationError,
     UserExistsError,
     InvalidCredentialsError
-} from "../utils/userErrors";
+} from "../exceptions/userErrors";
 import {
     DatabaseQueryError
-} from "../utils/databaseErrors";
-import { BadRequestError } from "../utils/applicationErrors";
+} from "../exceptions/databaseErrors";
+import { BadRequestError } from "../exceptions/applicationErrors";
+import bcrypt from 'bcryptjs';
 
 export const loginService = async (user: IUserLogin): Promise<string> => {
     try {
@@ -29,7 +29,13 @@ export const loginService = async (user: IUserLogin): Promise<string> => {
         }
 
         // User existence check
-        if (!userData || userData.email !== email || userData.password !== password) {
+        if (!userData || userData.email !== email) {
+            throw new InvalidCredentialsError("Invalid email or password");
+        }
+
+        // Compare password with hashed password in database
+        const isPasswordValid = await bcrypt.compare(password, userData.password);
+        if (!isPasswordValid) {
             throw new InvalidCredentialsError("Invalid email or password");
         }
 
@@ -69,10 +75,17 @@ export const signupService = async (user: IUserRegister): Promise<User> => {
             throw new UserExistsError("User already exists");
         }
 
-        // Insert user
+        // Hash password
+        const salt = await bcrypt.genSalt(10);
+        const hashedPassword = await bcrypt.hash(password, salt);
+
+        // Insert user with hashed password
         let userData;
         try {
-            userData = await insertUser(user);
+            userData = await insertUser({
+                ...user,
+                password: hashedPassword
+            });
         } catch (error: any) {
             console.error("Database error while inserting user:", error);
             throw new DatabaseQueryError("Failed to create user");

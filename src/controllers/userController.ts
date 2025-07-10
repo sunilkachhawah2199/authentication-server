@@ -1,7 +1,7 @@
 import { Request, Response, NextFunction } from "express";
 import { loginService, signupService } from "../services/userService";
 import { IUserLogin, IUserRegister } from "../models/userModel";
-import { BadRequestError } from "../utils/applicationErrors";
+import { BadRequestError } from "../exceptions/applicationErrors";
 
 // Login controller
 export const loginController = async (req: Request, res: Response) => {
@@ -26,7 +26,7 @@ export const loginController = async (req: Request, res: Response) => {
         });
 
     } catch (error: any) {
-        return res.status(500).json({
+        return res.status(error.statusCode || 500).json({
             status: false,
             message: error.message
         });
@@ -54,12 +54,11 @@ export const signupController = async (req: Request, res: Response) => {
             message: "User created successfully",
             user
         });
-    } catch (error) {
-        // Pass error to global error handler
-        // next(error);
-        return res.status(500).json({
+    } catch (error: any) {
+        // Use error's status code if available
+        return res.status(error.statusCode || 500).json({
             success: false,
-            message: "Internal server error"
+            message: error.message || "Internal server error"
         });
     }
 }
