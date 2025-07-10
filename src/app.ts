@@ -28,16 +28,8 @@ app.use("/user", authRoutes);
 
 
 // Protected routes --> Middleware to verify token
-// app.use(verifyToken);
+app.use(verifyToken);
 app.use("/upload", pdfRoutes);
-
-app.get('/secure', (req: Request, res: Response) => {
-    return res.status(200).json({
-        message: "This is a secure route",
-        status: "success",
-        timestamp: new Date().toISOString()
-    });
-});
 
 
 app.listen(port, () => {

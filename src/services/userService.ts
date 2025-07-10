@@ -42,7 +42,7 @@ export const loginService = async (user: IUserLogin): Promise<string> => {
 
         // token generation
         return generateToken(registeredUser);
-        
+
     } catch (error: any) {
         // Log the error for debugging
         console.error(`Login service error: ${error.name} - ${error.message}`);
@@ -55,11 +55,6 @@ export const loginService = async (user: IUserLogin): Promise<string> => {
 export const signupService = async (user: IUserRegister): Promise<User> => {
     try {
         const { email, name, password, organization, tool } = user;
-
-        // Input validation
-        if (!email || !password || !name || !organization || !tool) {
-            throw new UserValidationError("All fields are required");
-        }
 
         // Check if user exists
         let userExists;
