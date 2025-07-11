@@ -13,7 +13,7 @@ export const generateToken = (user: User ) => {
             organization: user.organization,
             tool: user.tool
         }
-        return sign(payload, JWT_SECRET, { expiresIn: "2h" });
+        return sign(payload, JWT_SECRET, { expiresIn: "24h" });
     }
     catch (err: any) {
         console.log(err);

@@ -7,10 +7,12 @@ export interface IUserLogin {
 }
 
 export enum Tool {
-
+    "insurance" = "INSURANCE",
+    "invoice" = "INVOICE"
 }
 
 export interface IUserRegister extends IUserLogin {
+    uuid: string;
     name: string;
     organization: string;
     tool: Tool;

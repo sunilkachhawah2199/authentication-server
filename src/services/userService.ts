@@ -1,5 +1,5 @@
 import { generateToken } from "../middleware/authMiddleware";
-import { findByEMail, insertUser, IUserLogin, IUserRegister, User } from "../models/userModel";
+import { findByEMail, insertUser, IUserLogin, IUserRegister, User, Tool } from "../models/userModel";
 import {
     UserExistsError,
     InvalidCredentialsError
@@ -9,8 +9,9 @@ import {
 } from "../exceptions/databaseErrors";
 import { BadRequestError } from "../exceptions/applicationErrors";
 import bcrypt from 'bcryptjs';
+import { v4 as uuidv4 } from 'uuid';
 
-export const loginService = async (user: IUserLogin): Promise<string> => {
+export const loginService = async (user: IUserLogin): Promise<{ token: string, user: User }> => {
     try {
         const { email, password } = user;
 
@@ -34,15 +35,22 @@ export const loginService = async (user: IUserLogin): Promise<string> => {
             throw new InvalidCredentialsError("Invalid email or password");
         }
 
+
         const registeredUser: User = {
             email: userData.email,
             name: userData.name,
             organization: userData.organization,
-            tool: userData.tool
+            tool: userData.tool as Tool
         }
 
         // token generation
-        return generateToken(registeredUser);
+        const token = generateToken(registeredUser);
+
+        // Return both token and user data
+        return {
+            token,
+            user: registeredUser
+        };
 
     } catch (error: any) {
         // Log the error for debugging
@@ -55,7 +63,8 @@ export const loginService = async (user: IUserLogin): Promise<string> => {
 
 export const signupService = async (user: IUserRegister): Promise<User> => {
     try {
-        const { email, name, password, organization, tool } = user;
+        const { email, password, tool } = user;
+
 
         // Check if user exists
         let userExists;
@@ -74,12 +83,16 @@ export const signupService = async (user: IUserRegister): Promise<User> => {
         const salt = await bcrypt.genSalt(10);
         const hashedPassword = await bcrypt.hash(password, salt);
 
+        // uuid generate for users
+        const myUuid = uuidv4();
+
         // Insert user with hashed password
         let userData;
         try {
             userData = await insertUser({
                 ...user,
-                password: hashedPassword
+                password: hashedPassword,
+                uuid: myUuid
             });
         } catch (error: any) {
             console.error("Database error while inserting user:", error);

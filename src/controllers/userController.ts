@@ -1,7 +1,12 @@
 import { Request, Response, NextFunction } from "express";
 import { loginService, signupService } from "../services/userService";
-import { IUserLogin, IUserRegister } from "../models/userModel";
+import { IUserLogin, IUserRegister, Tool } from "../models/userModel";
 import { BadRequestError } from "../exceptions/applicationErrors";
+
+// check if tool is valid
+const isValidTool = (tool: string): boolean => {
+    return Object.values(Tool).includes(tool as Tool);
+};
 
 // Login controller
 export const loginController = async (req: Request, res: Response) => {
@@ -16,13 +21,14 @@ export const loginController = async (req: Request, res: Response) => {
         const userInput: IUserLogin = { email, password };
 
         // Attempt to login
-        const token = await loginService(userInput);
+        const result = await loginService(userInput);
 
         // Success response
         return res.status(200).json({
             status: true,
             message: "Login Successfull",
-            token: token
+            token: result.token,
+            user: result.user
         });
 
     } catch (error: any) {
@@ -43,7 +49,18 @@ export const signupController = async (req: Request, res: Response) => {
             throw new BadRequestError("All fields are required");
         }
 
-        const userInput: IUserRegister = { email, password, name, organization, tool };
+        // Validate tool type
+        if (!isValidTool(tool)) {
+            throw new BadRequestError(`Invalid tool type. Must be one of: ${Object.values(Tool).join(", ")}`);
+        }
+
+        const userInput: IUserRegister = {
+            email,
+            password,
+            name,
+            organization,
+            tool: tool as Tool
+        };
 
         // Attempt to create user
         const user = await signupService(userInput);

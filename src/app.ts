@@ -30,7 +30,7 @@ app.use("/user", authRoutes);
 
 
 // Protected routes --> Middleware to verify token
-// app.use(verifyToken);
+app.use(verifyToken);
 app.use("/upload", pdfRoutes);
 
 

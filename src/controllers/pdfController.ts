@@ -1,13 +1,6 @@
 import { Request, Response } from "express";
 import { uploadPdfService } from "../services/pdfService";
 
-// Function to generate unique session folder
-// const generateSessionFolder = (): string => {
-//     const timestamp = new Date().toISOString().replace(/[:.]/g, "-");
-//     const random = Math.random().toString(36).substring(2, 8);
-//     return `session-${timestamp}-${random}`;
-// };
-
 // Route handler for PDF uploads
 export const uploadPdfController = async (req: Request, res: Response): Promise<void> => {
     console.log("Upload request received");
