@@ -19,7 +19,8 @@ export const uploadFileToS3 = async (
         const key = `${sessionFolder}/${file.originalname}`;
 
         const params = {
-            Bucket: process.env.AWS_S3_BUCKET || "insurance-bhang",
+            // Bucket: process.env.AWS_S3_BUCKET || "insurance-extractor",
+            Bucket: process.env.AWS_S3_BUCKET,
             Key: key,
             Body: file.buffer,
             ContentType: file.mimetype,

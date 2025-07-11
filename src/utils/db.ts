@@ -1,12 +1,11 @@
 const { Pool } = require("pg");
-import dotenv from 'dotenv';
 
 const pool = new Pool({
-  user: "Nexedgeserver01",
-  password: "Konproz12##",
-  host: "test-nexedge-db.c3wswiousmsm.ap-south-1.rds.amazonaws.com",
+  user: process.env.DB_USER,
+  password: process.env.DB_PASSWORD,
+  host: process.env.DB_HOST,
   port: 5432,
-  database: "authentication",
+  database: process.env.DB_NAME,
   ssl: {
     rejectUnauthorized: false,
   },

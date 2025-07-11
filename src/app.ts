@@ -2,6 +2,7 @@ import dotenv from 'dotenv';
 dotenv.config();
 
 import express, { type Request, type Response } from 'express';
+import cors from 'cors';
 import authRoutes from './routes/authRoutes';
 import { verifyToken } from './middleware/authMiddleware';
 import pdfRoutes from './routes/pdfRoutes';
@@ -12,7 +13,8 @@ const port = process.env.PORT ?? 4000;
 // Middleware to parse JSON bodies
 app.use(express.json());
 
-
+// Enable CORS for all routes
+app.use(cors());
 
 // health check route
 app.get('/health', (req: Request, res: Response) => {
@@ -28,7 +30,7 @@ app.use("/user", authRoutes);
 
 
 // Protected routes --> Middleware to verify token
-app.use(verifyToken);
+// app.use(verifyToken);
 app.use("/upload", pdfRoutes);
 
 

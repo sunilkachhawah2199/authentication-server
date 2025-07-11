@@ -14,12 +14,7 @@ export const loginService = async (user: IUserLogin): Promise<string> => {
     try {
         const { email, password } = user;
 
-        // Input validation
-        if (!email || !password) {
-            throw new BadRequestError("Email and password are required");
-        }
-
-        // Database operation with error handling
+        // find user with email in db
         let userData;
         try {
             userData = await findByEMail(email);
