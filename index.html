@@ -1,4 +1,151 @@
-<form action="http://localhost:4000/upload/pdfs" method="post" enctype="multipart/form-data">
-    <input type="file" name="pdfs" multiple accept="application/pdf" />
-    <button type="submit">Upload</button>
-</form>
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PDF Upload with Authentication</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .container {
+            border: 1px solid #ddd;
+            padding: 20px;
+            border-radius: 5px;
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+
+        input[type="file"],
+        input[type="text"] {
+            width: 100%;
+            padding: 8px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+        }
+
+        button {
+            background-color: #4CAF50;
+            color: white;
+            padding: 10px 15px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+
+        button:hover {
+            background-color: #45a049;
+        }
+
+        .message {
+            margin-top: 20px;
+            padding: 10px;
+            border-radius: 4px;
+        }
+
+        .success {
+            background-color: #dff0d8;
+            color: #3c763d;
+        }
+
+        .error {
+            background-color: #f2dede;
+            color: #a94442;
+        }
+
+        #status {
+            margin-top: 20px;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <h1>PDF Upload with Authentication</h1>
+
+        <div class="form-group">
+            <label for="token">Bearer Token:</label>
+            <input type="text" id="token" placeholder="Enter your bearer token" />
+        </div>
+
+        <div class="form-group">
+            <label for="fileInput">Select PDF Files:</label>
+            <input type="file" id="fileInput" multiple accept="application/pdf" />
+        </div>
+
+        <button id="uploadButton">Upload</button>
+
+        <div id="status"></div>
+    </div>
+
+    <script>
+        document.getElementById('uploadButton').addEventListener('click', async () => {
+            const token = document.getElementById('token').value.trim();
+            const fileInput = document.getElementById('fileInput');
+            const statusDiv = document.getElementById('status');
+
+            // Validate inputs
+            if (!token) {
+                showMessage('Please enter a bearer token', 'error');
+                return;
+            }
+
+            if (!fileInput.files || fileInput.files.length === 0) {
+                showMessage('Please select at least one PDF file', 'error');
+                return;
+            }
+
+            // Create FormData
+            const formData = new FormData();
+            for (let i = 0; i < fileInput.files.length; i++) {
+                formData.append('pdfs', fileInput.files[i]);
+            }
+
+            try {
+                showMessage('Uploading files...', '');
+
+                // Send request with bearer token
+                const response = await fetch('http://localhost:4000/upload/pdfs', {
+                    method: 'POST',
+                    headers: {
+                        'Authorization': `Bearer ${token}`
+                    },
+                    body: formData
+                });
+
+                const result = await response.json();
+
+                if (response.ok) {
+                    showMessage(result.message, 'success');
+                } else {
+                    showMessage(`Error: ${result.message || 'Upload failed'}`, 'error');
+                }
+            } catch (error) {
+                showMessage(`Error: ${error.message || 'Upload failed'}`, 'error');
+                console.error('Upload error:', error);
+            }
+        });
+
+        function showMessage(text, type) {
+            const statusDiv = document.getElementById('status');
+            statusDiv.textContent = text;
+            statusDiv.className = 'message ' + type;
+        }
+    </script>
+</body>
+
+</html>
