@@ -3,7 +3,7 @@ import multer from "multer";
 import path from "path";
 
 // Custom error handler for multer
-export const handleMulterError = (err: any, req: Request, res: Response, next: NextFunction) => {
+export const handleMulterError = (err: any, req: Request, res: Response, next: NextFunction): Response | void => {
     if (err instanceof multer.MulterError) {
         // A Multer error occurred when uploading
         console.error("Multer error:", err.code, err.message);
@@ -98,7 +98,7 @@ export const pdfUpload = multer({
             file.mimetype
         );
         return cb(null, true);
-    }, 
+    },
     limits: {
         files: 200,
         fileSize: 50 * 1024 * 1024, // 50 MB in bytes
@@ -106,7 +106,7 @@ export const pdfUpload = multer({
 });
 
 // Middleware to check if any valid files were uploaded
-export const validateFileUpload = (req: Request, res: Response, next: NextFunction) => {
+export const validateFileUpload = (req: Request, res: Response, next: NextFunction): Response | void => {
     // If there are validation errors, return them
     if (req.fileValidationErrors && req.fileValidationErrors.length > 0) {
         return res.status(415).json({
