@@ -2,7 +2,7 @@ import axios from "axios";
 import { AiProcessRequest } from "../models/fileModel";
 import { BadRequestError } from "../exceptions/applicationErrors";
 
-const baseUrl = "https://meerkat-bright-crane.ngrok-free.app"
+const baseUrl = process.env.AI_URL
 const extratorAPI = `${baseUrl}/process`
 
 export const extractorService = async (request: AiProcessRequest): Promise<boolean> => {
