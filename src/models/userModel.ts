@@ -39,8 +39,8 @@ export const findByEMail = async (email: string): Promise<IUserRegister> => {
 
 export const insertUser = async (user: IUserRegister): Promise<User> => {
     try {
-        const { email, name, password, tool, organization } = user;
-        const result = await pool.query(QUERIES.USER.INSERT_USER, [email, name, password, tool, organization]);
+        const { email, name, password, tool, organization, uuid } = user;
+        const result = await pool.query(QUERIES.USER.INSERT_USER, [email, name, password, tool, organization, uuid]);
         return result.rows[0];
     } catch (err) {
         console.log(err);

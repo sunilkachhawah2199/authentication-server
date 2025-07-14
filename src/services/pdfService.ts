@@ -1,5 +1,6 @@
-import { UploadResult } from "../models/fileModel";
+import { AiProcessRequest, UploadResult } from "../models/fileModel";
 import { uploadFileToS3 } from "../utils/s3";
+import { extractorService } from "./extractorService";
 
 // Function to generate unique session folder
 const generateSessionFolder = (): string => {
@@ -10,7 +11,7 @@ const generateSessionFolder = (): string => {
 
 
 // Service to upload PDFs to S3
-export const uploadPdfService = async (files: Express.Multer.File[]): Promise<UploadResult> => {
+export const uploadPdfService = async (files: Express.Multer.File[], userEmail: string): Promise<UploadResult> => {
     try {
         // Generate unique session folder for this upload
         const sessionFolder = generateSessionFolder();
@@ -29,6 +30,20 @@ export const uploadPdfService = async (files: Express.Multer.File[]): Promise<Up
 
         console.log("Upload completed successfully");
 
+        const requestBody: AiProcessRequest = {
+            email: userEmail, // Use the email from the authenticated user
+            folderUrl: folderUrl
+        }
+
+        // Try to call the extractor service, but don't let failures stop the upload process
+        try {
+            await extractorService(requestBody);
+            console.log("AI extractor service called successfully");
+        } catch (error) {
+            console.error("Error calling AI extractor service, but continuing:", error);
+            // Continue processing - don't fail the upload if the extractor service fails
+        }
+
         // Return the result to be used by the controller
         return {
             message: `${files.length} files uploaded successfully`,
@@ -38,7 +53,7 @@ export const uploadPdfService = async (files: Express.Multer.File[]): Promise<Up
         };
     } catch (error: any) {
         // Log the error for debugging
-        console.error(`upload pdf error: ${error.name} - ${error.message}`);
+        console.error(`Upload pdf error: ${error.name} - ${error.message}`);
 
         // Re-throw to be handled by the controller
         throw error;

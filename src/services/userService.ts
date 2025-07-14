@@ -85,6 +85,7 @@ export const signupService = async (user: IUserRegister): Promise<User> => {
 
         // uuid generate for users
         const myUuid = uuidv4();
+        console.log("myUuid", myUuid);
 
         // Insert user with hashed password
         let userData;

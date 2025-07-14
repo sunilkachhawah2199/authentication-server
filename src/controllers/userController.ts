@@ -2,6 +2,7 @@ import { Request, Response, NextFunction } from "express";
 import { loginService, signupService } from "../services/userService";
 import { IUserLogin, IUserRegister, Tool } from "../models/userModel";
 import { BadRequestError } from "../exceptions/applicationErrors";
+import { v4 as uuidv4 } from 'uuid';
 
 // check if tool is valid
 const isValidTool = (tool: string): boolean => {
@@ -54,12 +55,16 @@ export const signupController = async (req: Request, res: Response) => {
             throw new BadRequestError(`Invalid tool type. Must be one of: ${Object.values(Tool).join(", ")}`);
         }
 
+        // Generate a UUID for the new user
+        const uuid = uuidv4();
+
         const userInput: IUserRegister = {
             email,
             password,
             name,
             organization,
-            tool: tool as Tool
+            tool: tool as Tool,
+            uuid
         };
 
         // Attempt to create user
