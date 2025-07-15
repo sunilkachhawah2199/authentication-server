@@ -2,6 +2,7 @@ import axios from "axios";
 import { AiProcessRequest } from "../models/fileModel";
 import { BadRequestError } from "../exceptions/applicationErrors";
 
+const INSURANCE_API_KEY = process.env.INSURANCE_API_KEY;
 const baseUrl = process.env.AI_URL
 const extratorAPI = `${baseUrl}/process`
 
@@ -12,11 +13,18 @@ export const extractorService = async (request: AiProcessRequest): Promise<boole
             throw new BadRequestError("provide email and folderUrl to process extractor api")
         }
 
+        console.log(`request came in extratcor ai ${email} || ${folderUrl}`)
         // call ai process api
         const aiProcessResponse = await axios.post(`${extratorAPI}`, {
             email: email,
             s3_folder_url: folderUrl
-        })
+        },
+            // {
+            //     headers: {
+            //         'x-api-key': INSURANCE_API_KEY
+            //     }
+            // }
+        )
         console.log("extractor service response", aiProcessResponse.data)
 
         if (aiProcessResponse.status == 200) {

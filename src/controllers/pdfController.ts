@@ -29,8 +29,7 @@ export const uploadPdfController = async (req: Request, res: Response) => {
 
         return res.status(200).json({
             status: true,
-            message: `${(req.files as Express.Multer.File[]).length} files uploaded successfully, you will get response over mail in some time.`,
-            sessionId: result.sessionFolder // Include session ID for reference
+            message: `${(req.files as Express.Multer.File[]).length} files uploaded successfully, you will get response over your email: ${userEmail} in some time.`
         });
     } catch (error: any) {
         console.error("Error during S3 upload:", error);
