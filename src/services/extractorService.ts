@@ -2,11 +2,10 @@ import axios from "axios";
 import { AiProcessRequest } from "../models/fileModel";
 import { BadRequestError } from "../exceptions/applicationErrors";
 
-const INSURANCE_API_KEY = process.env.INSURANCE_API_KEY;
 const baseUrl = process.env.AI_URL
 const extratorAPI = `${baseUrl}/process`
 
-export const extractorService = async (request: AiProcessRequest): Promise<boolean> => {
+export const extractorService = async (request: AiProcessRequest): Promise<void> => {
     try {
         const { email, folderUrl } = request;
         if (!email || !folderUrl) {
@@ -18,19 +17,10 @@ export const extractorService = async (request: AiProcessRequest): Promise<boole
         const aiProcessResponse = await axios.post(`${extratorAPI}`, {
             email: email,
             s3_folder_url: folderUrl
-        },
-            // {
-            //     headers: {
-            //         'x-api-key': INSURANCE_API_KEY
-            //     }
-            // }
+        }
         )
         console.log("extractor service response", aiProcessResponse.data)
-
-        if (aiProcessResponse.status == 200) {
-            return true;
-        }
-        return false;
+        return;
 
     }
     catch (err: any) {
@@ -50,6 +40,6 @@ export const extractorService = async (request: AiProcessRequest): Promise<boole
 
         // Instead of crashing the application, return false and log the error
         console.error("Failed to process extraction request:", err);
-        return false;
+        return;
     }
 }

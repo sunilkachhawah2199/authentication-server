@@ -22,10 +22,11 @@ export const uploadPdfController = async (req: Request, res: Response) => {
         console.log(`Processing upload for user: ${userEmail}`);
 
         // upload all the pdf file to s3 bucket, passing the user's email
-        const result = await uploadPdfService(req.files as Express.Multer.File[], userEmail);
+        const result = uploadPdfService(req.files as Express.Multer.File[], userEmail);
 
         // forward this request to AI backend with folder url.
         // .........this part is pending
+        console.log("request sent to ai")
 
         return res.status(200).json({
             status: true,
