@@ -6,13 +6,15 @@ const CERT = process?.env?.VIDUR_FIREBASE_SERVICE_ACC_PRIVATE_KEY?.replace(
   '\n',
 );
 
+const FIREBASE_CLIENT_ID=process?.env?.FIREBASE_CLIENT_ID;
+
 export const VIDUR_SERVICE_ACCOUNT = {
   "type": "service_account",
   "project_id": "vidurdev-390ea",
   "private_key_id": "e4daf58d06cb8eca32e4c61ad6e494d7eab7317a",
   "private_key": CERT,
   "client_email": "firebase-adminsdk-1zrae@vidurdev-390ea.iam.gserviceaccount.com",
-  "client_id": "102140657117872176325",
+  "client_id": FIREBASE_CLIENT_ID,
   "auth_uri": "https://accounts.google.com/o/oauth2/auth",
   "token_uri": "https://oauth2.googleapis.com/token",
   "auth_provider_x509_cert_url": "https://www.googleapis.com/oauth2/v1/certs",
