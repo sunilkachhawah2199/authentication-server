@@ -1,5 +1,7 @@
-const pool = require("../utils/db");
-const { QUERIES } = require("../constants/database");
+import { BadRequestError } from "../exceptions/applicationErrors";
+import { FIREBASE_COLLECTIONS } from "../constants/firestore";
+import { db } from "../utils/firebase_admin_sdk";
+import { v4 as uuidv4 } from 'uuid';
 
 export interface IUserLogin {
     email: string;
@@ -16,6 +18,8 @@ export interface IUserRegister extends IUserLogin {
     name: string;
     organization: string;
     tool: Tool;
+    createdAt?: Date;
+    updatedAt?: Date;
 }
 
 export interface User {
@@ -26,10 +30,22 @@ export interface User {
 }
 
 
-export const findByEMail = async (email: string): Promise<IUserRegister> => {
+// find user by email: output --> IUserRegister | null
+export const findByEMail = async (email: string): Promise<IUserRegister | null> => {
     try {
-        const result = await pool.query(QUERIES.USER.FIND_BY_EMAIL, [email]);
-        return result.rows[0];
+        const user = await db().collection(FIREBASE_COLLECTIONS.USERS).where('email', '==', email).get();
+        if (user.empty) {
+            return null;
+        }
+
+        // Get the first matching document and include the document ID
+        const userDoc = user.docs[0];
+        const userData = userDoc.data() as IUserRegister;
+
+        // Log the user data for debugging
+        console.log("User found:", userData);
+
+        return userData;
     } catch (err) {
         console.log(err);
         throw new Error("Error finding user by email");
@@ -37,13 +53,38 @@ export const findByEMail = async (email: string): Promise<IUserRegister> => {
 }
 
 
-export const insertUser = async (user: IUserRegister): Promise<User> => {
+export const insertUser = async (userData: IUserRegister): Promise<User> => {
     try {
-        const { email, name, password, tool, organization, uuid } = user;
-        const result = await pool.query(QUERIES.USER.INSERT_USER, [email, name, password, tool, organization, uuid]);
-        return result.rows[0];
+        // uuid generate for users
+        const uuid = uuidv4();
+        console.log("myUuid", uuid);
+        const { email, name, password, tool, organization } = userData;
+
+        // Insert user into Firebase Firestore
+        const userRef = await db().collection(FIREBASE_COLLECTIONS.USERS).add({
+            email,
+            name,
+            password,
+            tool,
+            organization,
+            uuid,
+            createdAt: new Date(),
+            updatedAt: new Date()
+        });
+
+        console.log("User inserted with ID:", userRef.id);
+
+        const savedUser={
+            email,
+            name,
+            organization,
+            tool
+        }
+        // Return the user data without password for security
+        return savedUser;
     } catch (err) {
         console.log(err);
         throw new Error("Error inserting user");
     }
 }
+

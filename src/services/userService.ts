@@ -9,7 +9,7 @@ import {
 } from "../exceptions/databaseErrors";
 import { BadRequestError } from "../exceptions/applicationErrors";
 import bcrypt from 'bcryptjs';
-import { v4 as uuidv4 } from 'uuid';
+
 
 export const loginService = async (user: IUserLogin): Promise<{ token: string, user: User }> => {
     try {
@@ -63,7 +63,7 @@ export const loginService = async (user: IUserLogin): Promise<{ token: string, u
 
 export const signupService = async (user: IUserRegister): Promise<User> => {
     try {
-        const { email, password, tool } = user;
+        const { email, password } = user;
 
 
         // Check if user exists
@@ -83,9 +83,7 @@ export const signupService = async (user: IUserRegister): Promise<User> => {
         const salt = await bcrypt.genSalt(10);
         const hashedPassword = await bcrypt.hash(password, salt);
 
-        // uuid generate for users
-        const myUuid = uuidv4();
-        console.log("myUuid", myUuid);
+        
 
         // Insert user with hashed password
         let userData;
@@ -93,7 +91,6 @@ export const signupService = async (user: IUserRegister): Promise<User> => {
             userData = await insertUser({
                 ...user,
                 password: hashedPassword,
-                uuid: myUuid
             });
         } catch (error: any) {
             console.error("Database error while inserting user:", error);
