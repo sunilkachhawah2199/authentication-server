@@ -113,3 +113,46 @@ export const signupService = async (user: IUserRegister): Promise<User> => {
         throw error;
     }
 }
+
+
+// export const newSignupService = async (user: IUserRegister) => {
+//     const { uuid, name, email, password, organization_id, access_type, agents } = user
+//     // Check if user exists
+//     let userExists;
+//     try {
+//         userExists = await findByEMail(email);
+//     } catch (error: any) {
+//         console.error("Database error while checking user existence:", error);
+//         throw new DatabaseQueryError("Failed to check if user exists");
+//     }
+
+//     // create agents entry --> save using create agent function
+//     let savedAgents: savedAgent[] = [];
+
+//     if (agents && agents.length > 0) {
+//         console.log(`Processing ${agents.length} agents for user: ${email}`);
+
+//         // Iterate through all agents and save them
+//         for (let i = 0; i < agents.length; i++) {
+//             const agent = agents[i];
+//             console.log(`Saving agent ${i + 1}/${agents.length}: ${agent.name}`);
+
+//             try {
+//                 // Save each agent using createAgentService
+//                 const savedAgent = await createAgentService(agent);
+//                 savedAgents.push(savedAgent);
+//                 console.log(`Successfully saved agent: ${savedAgent.id}`);
+//             } catch (error) {
+//                 console.error(`Failed to save agent ${agent.name}:`, error);
+//                 // You can choose to continue or throw error based on your requirements
+//                 throw new Error(`Failed to save agent: ${agent.name}`);
+//             }
+//         }
+
+//         console.log(`Successfully saved all ${savedAgents.length} agents`);
+//         console.log("All saved agents:", savedAgents);
+//         return;
+//     } else {
+//         console.log("No agents to save for this user");
+//     }
+// }
