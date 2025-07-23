@@ -7,8 +7,10 @@ import {
 import {
     DatabaseQueryError
 } from "../exceptions/databaseErrors";
-import { BadRequestError } from "../exceptions/applicationErrors";
 import bcrypt from 'bcryptjs';
+import { getAgentByIdService } from "./agentService";
+import { db } from "../utils/firebase_admin_sdk";
+import { FIREBASE_COLLECTIONS } from "../constants/firestore";
 
 
 export const loginService = async (user: IUserLogin): Promise<{ token: string, user: User }> => {
@@ -83,7 +85,7 @@ export const signupService = async (user: IUserRegister): Promise<User> => {
         const salt = await bcrypt.genSalt(10);
         const hashedPassword = await bcrypt.hash(password, salt);
 
-        
+
 
         // Insert user with hashed password
         let userData;
@@ -111,5 +113,68 @@ export const signupService = async (user: IUserRegister): Promise<User> => {
 
         // Re-throw to be handled by the controller
         throw error;
+    }
+}
+
+// update user
+export const updateUser = async (user: IUserRegister): Promise<IUserRegister> => {
+    try {
+        const { uuid } = user;
+        if (!uuid) {
+            throw new Error("User UUID is required to update.");
+        }
+        const userQuery = await db().collection(FIREBASE_COLLECTIONS.USERS).where("uuid", "==", uuid).limit(1).get();
+
+        if (userQuery.empty) {
+            throw new Error("User not found");
+        }
+
+        const userDocRef = userQuery.docs[0].ref;
+
+        const { password, uuid: userId, createdAt, ...updateData } = user;
+
+        const updatePayload = {
+            ...updateData,
+            updatedAt: new Date(),
+        };
+
+        await userDocRef.update(updatePayload);
+
+        const updatedUserDoc = await userDocRef.get();
+        return updatedUserDoc.data() as IUserRegister;
+
+    } catch (err: any) {
+        console.log("error in updating profile", err.message);
+        throw new Error(`Error in updating profile: ${err.message}`);
+    }
+}
+
+// // update user --> add agent in user profile
+export const addAgentToUserService = async (email: string, agentId: string[]) => {
+    try {
+        if(!email){
+
+        }
+        const user = await findByEMail(email);
+        if (!user) {
+            throw new Error("User not found");
+        }
+        let userAgents = user.agents || [];
+        for (let id in agentId) {
+            const agent = await getAgentByIdService(id);
+            if (!agent) {
+                throw new Error("Agent not found");
+            }
+            if (!userAgents.includes(id)) {
+                userAgents.push(id);
+            }
+        }
+        user.agents = userAgents;
+        const updatedUser = await updateUser(user);
+        return updatedUser;
+
+    } catch (error: any) {
+        console.error("Error adding agent to user", error.message);
+        throw new Error(`Error adding agent to user: ${error.message}`);
     }
 }

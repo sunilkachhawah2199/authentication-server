@@ -6,6 +6,7 @@ import cors from 'cors';
 import authRoutes from './routes/authRoutes';
 import { verifyToken } from './middleware/authMiddleware';
 import pdfRoutes from './routes/pdfRoutes';
+import agentRoutes from './routes/agentRoutes';
 
 const app = express();
 const port = process.env.PORT ?? 4000;
@@ -27,6 +28,9 @@ app.get('/health', (req: Request, res: Response) => {
 
 // Public routes --> No need to verify token
 app.use("/user", authRoutes);
+
+// agent route
+app.use("/agent", agentRoutes);
 
 
 // Protected routes --> Middleware to verify token

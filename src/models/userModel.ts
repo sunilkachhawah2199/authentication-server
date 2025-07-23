@@ -1,4 +1,3 @@
-import { BadRequestError } from "../exceptions/applicationErrors";
 import { FIREBASE_COLLECTIONS } from "../constants/firestore";
 import { db } from "../utils/firebase_admin_sdk";
 import { v4 as uuidv4 } from 'uuid';
@@ -18,6 +17,7 @@ export interface IUserRegister extends IUserLogin {
     name: string;
     organization: string;
     tool: Tool;
+    agents?: string[];
     createdAt?: Date;
     updatedAt?: Date;
 }
