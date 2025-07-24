@@ -13,6 +13,7 @@ declare global {
                 name: string;
                 organization: string;
                 tool: string;
+                uuid: string;
             };
         }
     }
@@ -25,7 +26,8 @@ export const generateToken = (user: User) => {
             email: user.email,
             name: user.name,
             organization: user.organization,
-            tool: user.tool
+            tool: user.tool,
+            uuid: user.uuid
         }
         return sign(payload, JWT_SECRET, { expiresIn: "24h" });
     }
@@ -56,6 +58,7 @@ export const verifyToken = (req: Request, res: Response, next: NextFunction) => 
 
             // Add user data to request object
             req.user = {
+                uuid: decoded.uuid,
                 email: decoded.email,
                 name: decoded.name,
                 organization: decoded.organization,

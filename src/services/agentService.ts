@@ -47,15 +47,28 @@ export const getAllAgentService = async (): Promise<IAgentRegisterResponse[]> =>
     }
 }
 
+
+// admin system
 export const getAgentByIdService = async (agentId: string) => {
     try {
+        console.log("agentId in get agent service", agentId)
         const agent = await db().collection(FIREBASE_COLLECTIONS.AGENTS).where("agentId", "==", agentId).get();
-
-        if (agent.empty) {
+        console.log(agent.docs[0].data())
+        const agentData = agent.docs.map((doc) => {
+            const data = doc.data();
+            return {
+                agentId: data.agentId,
+                name: data.name,
+                description: data.description,
+                tags: data.tags,
+                icon: data.icon,
+            } as IAgentRegisterResponse;
+        })
+        if (!agentData) {
             return null;
         }
 
-        return agent.docs[0].data();
+        return agentData;
     } catch (err: any) {
         console.log("Error getting agent", err.message);
         throw new Error(`Error in getting agent: ${err.message}`);

@@ -1,6 +1,6 @@
 import { Router } from "express";
-import { loginController, signupController } from "../controllers/userController";
 import { validateApiKey } from "../middleware/apiKeyMiddleware";
+import { fetchUserAgentController, loginController, signupController } from "../controllers/authController";
 
 const router = Router();
 
@@ -9,5 +9,7 @@ router.post("/login", loginController);
 
 // Protected route - only accessible with valid API key
 router.post("/signup", validateApiKey, signupController);
+
+router.get("/fetch-agents", fetchUserAgentController);
 
 export default router;

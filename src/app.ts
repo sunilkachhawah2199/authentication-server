@@ -6,7 +6,8 @@ import cors from 'cors';
 import authRoutes from './routes/authRoutes';
 import { verifyToken } from './middleware/authMiddleware';
 import pdfRoutes from './routes/pdfRoutes';
-import agentRoutes from './routes/agentRoutes';
+import adminRoutes from './routes/admin/admin';
+import userRoutes from './routes/userRoutes';
 
 const app = express();
 const port = process.env.PORT ?? 4000;
@@ -27,14 +28,15 @@ app.get('/health', (req: Request, res: Response) => {
 });
 
 // Public routes --> No need to verify token
-app.use("/user", authRoutes);
+app.use("/auth", authRoutes);
+
 
 // agent route
-app.use("/agent", agentRoutes);
-
+app.use("/admin", adminRoutes);
 
 // Protected routes --> Middleware to verify token
 app.use(verifyToken);
+app.use("/user", userRoutes);
 app.use("/upload", pdfRoutes);
 
 

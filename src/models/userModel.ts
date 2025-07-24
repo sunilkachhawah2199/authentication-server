@@ -27,6 +27,7 @@ export interface User {
     name: string;
     organization: string;
     tool: Tool;
+    uuid?: string;
 }
 
 
@@ -74,11 +75,12 @@ export const insertUser = async (userData: IUserRegister): Promise<User> => {
 
         console.log("User inserted with ID:", userRef.id);
 
-        const savedUser={
+        const savedUser = {
             email,
             name,
             organization,
-            tool
+            tool,
+            uuid
         }
         // Return the user data without password for security
         return savedUser;

@@ -152,7 +152,7 @@ export const updateUser = async (user: IUserRegister): Promise<IUserRegister> =>
 // // update user --> add agent in user profile
 export const addAgentToUserService = async (email: string, agentId: string[]) => {
     try {
-        if(!email){
+        if (!email) {
 
         }
         const user = await findByEMail(email);
@@ -161,11 +161,12 @@ export const addAgentToUserService = async (email: string, agentId: string[]) =>
         }
         let userAgents = user.agents || [];
         for (let id in agentId) {
-            const agent = await getAgentByIdService(id);
+            const agent = await getAgentByIdService(agentId[id]);
+            console.log("agent ", agent)
             if (!agent) {
                 throw new Error("Agent not found");
             }
-            if (!userAgents.includes(id)) {
+            if (!userAgents.includes(agentId[id])) {
                 userAgents.push(id);
             }
         }
@@ -178,3 +179,33 @@ export const addAgentToUserService = async (email: string, agentId: string[]) =>
         throw new Error(`Error adding agent to user: ${error.message}`);
     }
 }
+
+// fetch agent of user:
+export const fetchUserAgents = async (email: string) => {
+    try {
+        const user = await findByEMail(email);
+        if (!user) {
+            throw new Error("User not found");
+        }
+
+        const agentsIds = user.agents;
+        if (!agentsIds?.length)
+            return [];
+
+        let agents = [];
+        for (let id in agentsIds) {
+            const agent = await getAgentByIdService(agentsIds[id]);
+            // if agent not found just skip it
+            if (!agent) {
+                continue;
+            }
+            agents.push(agent);
+        }
+        return agents;
+
+    } catch (err: any) {
+        console.error("Error fetching user agents", err.message);
+        throw new Error(`Error fetching user agents: ${err.message}`);
+    }
+}
+
