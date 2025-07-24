@@ -3,9 +3,10 @@ import { v4 as uuidv4 } from 'uuid';
 import { IAgentRegister, IAgentRegisterResponse } from "../models/agentModel";
 import { FIREBASE_COLLECTIONS } from "../constants/firestore";
 
+// create new agent
 export const createAgentService = async (agent: IAgentRegister) => {
     try {
-        const agentUuid = uuidv4();
+        const agentUuid = `agent-${uuidv4()}`;
         agent.agentId = agentUuid;
         agent.isActive = true;
         agent.updatedAt = new Date();
@@ -25,6 +26,7 @@ export const createAgentService = async (agent: IAgentRegister) => {
     }
 }
 
+// get all the agents
 export const getAllAgentService = async (): Promise<IAgentRegisterResponse[]> => {
     try {
         const agentsSnapshot = await db().collection(FIREBASE_COLLECTIONS.AGENTS).get();
@@ -42,7 +44,7 @@ export const getAllAgentService = async (): Promise<IAgentRegisterResponse[]> =>
 
         return agentData;
     } catch (err: any) {
-        console.log("Error getting agent", err.message);
+        console.log("Error in getting all agent", err.message);
         throw new Error(`Error in getting agents: ${err.message}`);
     }
 }
@@ -70,7 +72,7 @@ export const getAgentByIdService = async (agentId: string) => {
 
         return agentData;
     } catch (err: any) {
-        console.log("Error getting agent", err.message);
-        throw new Error(`Error in getting agent: ${err.message}`);
+        console.log("agent not exist with this id:", err.message);
+        throw new Error(`agent not exist with this id: ${err.message}`);
     }
 }

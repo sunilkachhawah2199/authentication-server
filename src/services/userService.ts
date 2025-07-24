@@ -1,5 +1,5 @@
 import { generateToken } from "../middleware/authMiddleware";
-import { findByEMail, IUserRegister} from "../models/userModel";
+import { findByEMail, IUserRegister } from "../models/userModel";
 
 import { getAgentByIdService } from "./agentService";
 import { db } from "../utils/firebase_admin_sdk";
@@ -38,7 +38,7 @@ export const updateUser = async (user: IUserRegister): Promise<IUserRegister> =>
     }
 }
 
-// // update user --> add agent in user profile
+// update user --> add agent in user profile
 export const addAgentToUserService = async (email: string, agentId: string[]) => {
     try {
         if (!email) {
@@ -69,7 +69,7 @@ export const addAgentToUserService = async (email: string, agentId: string[]) =>
     }
 }
 
-// fetch agent of user:
+// fetch agent of specific user:
 export const fetchUserAgents = async (email: string) => {
     try {
         const user = await findByEMail(email);

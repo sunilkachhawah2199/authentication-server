@@ -7,7 +7,7 @@ import authRoutes from './routes/authRoutes';
 import { verifyToken } from './middleware/authMiddleware';
 import pdfRoutes from './routes/pdfRoutes';
 import adminRoutes from './routes/admin/admin';
-import userRoutes from './routes/userRoutes';
+import userRoutes from './routes/agentRoutes';
 
 const app = express();
 const port = process.env.PORT ?? 4000;

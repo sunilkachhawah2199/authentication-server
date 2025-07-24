@@ -35,7 +35,7 @@ export const createAgentController = async (req: Request, res: Response) => {
     }
 }
 
-
+// fetch all the agents
 export const getAllAgentController = async (req: Request, res: Response) => {
     try {
         const agents = await getAllAgentService();
@@ -49,7 +49,7 @@ export const getAllAgentController = async (req: Request, res: Response) => {
     }
 }
 
-
+// assign agent to any user
 export const addAgentToUserController = async (req: Request, res: Response) => {
     try {
         const { email, agentId } = req.body;
