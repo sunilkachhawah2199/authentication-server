@@ -1,8 +1,11 @@
-import { Bool } from "aws-sdk/clients/clouddirectory";
+export enum AgentType {
+    INSURANCE,
+    INVOICE
+}
 
 export interface IAgentRegister {
     agentId?: string;
-    name: string;
+    name: AgentType;
     description: string;
     isActive?: Boolean;
     host: string;
@@ -14,7 +17,7 @@ export interface IAgentRegister {
 
 export interface IAgentRegisterResponse {
     agentId: string;
-    name: string;
+    name: AgentType;
     description: string;
     tags: string;
     icon: string;

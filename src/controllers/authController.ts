@@ -1,8 +1,9 @@
 import { Request, Response } from "express";
-import { fetchUserAgents, loginService, signupService } from "../services/userService";
+import { fetchUserAgents} from "../services/userService";
 import { IUserLogin, IUserRegister, Tool } from "../models/userModel";
 import { BadRequestError } from "../exceptions/applicationErrors";
 import { v4 as uuidv4 } from 'uuid';
+import { loginService, signupService } from "../services/authService";
 
 // check if tool is valid
 const isValidTool = (tool: string): boolean => {
@@ -43,17 +44,17 @@ export const loginController = async (req: Request, res: Response) => {
 // Signup controller
 export const signupController = async (req: Request, res: Response) => {
     try {
-        const { email, password, name, organization, tool } = req.body;
+        const { email, password, name, organization } = req.body;
 
         // Basic request validation
-        if (!email || !password || !name || !organization || !tool) {
+        if (!email || !password || !name || !organization) {
             throw new BadRequestError("All fields are required");
         }
 
         // Validate tool type
-        if (!isValidTool(tool)) {
-            throw new BadRequestError(`Invalid tool type. Must be one of: ${Object.values(Tool).join(", ")}`);
-        }
+        // if (!isValidTool(tool)) {
+        //     throw new BadRequestError(`Invalid tool type. Must be one of: ${Object.values(Tool).join(", ")}`);
+        // }
 
         // Generate a UUID for the new user
         const uuid = uuidv4();
@@ -63,7 +64,6 @@ export const signupController = async (req: Request, res: Response) => {
             password,
             name,
             organization,
-            tool: tool as Tool,
             uuid
         };
 
@@ -82,28 +82,5 @@ export const signupController = async (req: Request, res: Response) => {
             success: false,
             message: error.message || "Internal server error"
         });
-    }
-}
-
-export const fetchUserAgentController = async (req: Request, res: Response) => {
-    try {
-        if (!req.user) {
-            return res.status(401).json({
-                success: false,
-                message: "User not authenticated"
-            })
-        }
-        const agents = await fetchUserAgents(req.user.email);
-        return res.status(200).json({
-            success: true,
-            message: "User agents fetched successfully",
-            agents
-        })
-    } catch (err: any) {
-        console.log("error in fecthing error ", err.message)
-        return res.status(500).json({
-            "message": "error in getting user agenta",
-            "error": err.message
-        })
     }
 }

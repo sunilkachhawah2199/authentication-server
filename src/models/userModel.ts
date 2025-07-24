@@ -16,7 +16,6 @@ export interface IUserRegister extends IUserLogin {
     uuid: string;
     name: string;
     organization: string;
-    tool: Tool;
     agents?: string[];
     createdAt?: Date;
     updatedAt?: Date;
@@ -26,7 +25,6 @@ export interface User {
     email: string;
     name: string;
     organization: string;
-    tool: Tool;
     uuid?: string;
 }
 
@@ -59,14 +57,13 @@ export const insertUser = async (userData: IUserRegister): Promise<User> => {
         // uuid generate for users
         const uuid = uuidv4();
         console.log("myUuid", uuid);
-        const { email, name, password, tool, organization } = userData;
+        const { email, name, password, organization } = userData;
 
         // Insert user into Firebase Firestore
         const userRef = await db().collection(FIREBASE_COLLECTIONS.USERS).add({
             email,
             name,
             password,
-            tool,
             organization,
             uuid,
             createdAt: new Date(),
@@ -79,7 +76,6 @@ export const insertUser = async (userData: IUserRegister): Promise<User> => {
             email,
             name,
             organization,
-            tool,
             uuid
         }
         // Return the user data without password for security

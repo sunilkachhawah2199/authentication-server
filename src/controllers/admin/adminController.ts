@@ -1,4 +1,4 @@
-import { IAgentRegister } from "../../models/agentModel";
+import { IAgentRegister, AgentType } from "../../models/agentModel";
 import { BadRequestError } from "../../exceptions/applicationErrors";
 import { Request, Response } from "express";
 import { createAgentService, getAllAgentService } from "../../services/agentService";
@@ -7,8 +7,14 @@ import { addAgentToUserService } from "../../services/userService";
 export const createAgentController = async (req: Request, res: Response) => {
     try {
         const { name, host, apiKey, description, tags, icon } = req.body
+
         if (!name || !host || !apiKey || !description || !tags || !icon) {
             throw new BadRequestError("All fields are required");
+        }
+
+        // Validate that name is a valid agent type
+        if (!Object.values(AgentType).includes(name)) {
+            throw new BadRequestError("Name must be a valid agent type (INSURANCE or INVOICE)");
         }
         const agent: IAgentRegister = {
             name,

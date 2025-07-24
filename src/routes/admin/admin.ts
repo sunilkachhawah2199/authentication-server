@@ -1,4 +1,4 @@
-import { addAgentToUserController, createAgentController, getAllAgentController } from "../../controllers/admin/admin";
+import { addAgentToUserController, createAgentController, getAllAgentController } from "../../controllers/admin/adminController";
 import { Router } from "express";
 
 const router = Router();
