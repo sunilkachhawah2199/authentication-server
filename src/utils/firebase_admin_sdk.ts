@@ -1,12 +1,12 @@
 import firebaseAdmin, { type ServiceAccount } from 'firebase-admin';
 import { getFirestore } from 'firebase-admin/firestore';
 
-const CERT = process?.env?.VIDUR_FIREBASE_SERVICE_ACC_PRIVATE_KEY?.replace(
+const CERT = process?.env?.FIREBASE_SERVICE_ACC_PRIVATE_KEY?.replace(
   /\\n/g,
   '\n',
 );
 
-const FIREBASE_CLIENT_ID=process?.env?.FIREBASE_CLIENT_ID;
+const FIREBASE_CLIENT_ID = process?.env?.FIREBASE_CLIENT_ID;
 
 export const VIDUR_SERVICE_ACCOUNT = {
   "type": "service_account",
