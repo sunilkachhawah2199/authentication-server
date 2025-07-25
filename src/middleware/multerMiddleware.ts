@@ -14,11 +14,11 @@ export const handleMulterError = (err: any, req: Request, res: Response, next: N
         switch (err.code) {
             case 'LIMIT_FILE_SIZE':
                 statusCode = 413; // Payload Too Large
-                message = "File size exceeds the limit of 2MB";
+                message = "File size exceeds the limit of 100 MB";
                 break;
             case 'LIMIT_FILE_COUNT':
                 statusCode = 400;
-                message = "Too many files. Maximum 10 files allowed";
+                message = "Too many files. Maximum 200 files allowed";
                 break;
             case 'LIMIT_UNEXPECTED_FILE':
                 statusCode = 400;
@@ -102,6 +102,39 @@ export const pdfUpload = multer({
     limits: {
         files: 200,
         fileSize: 50 * 1024 * 1024, // 50 MB in bytes
+    },
+});
+
+// Configure multer for single CSV file upload
+export const csvSingleUpload = multer({
+    storage: multer.memoryStorage(),
+    fileFilter: (req: Request, file: Express.Multer.File, cb: multer.FileFilterCallback) => {
+        // CSV validation - check both mimetype and file extension
+        const allowedMimeTypes = ["text/csv", "application/csv", "text/plain"];
+        const fileExtension = path.extname(file.originalname).toLowerCase();
+
+        if (!allowedMimeTypes.includes(file.mimetype) && fileExtension !== ".csv") {
+            console.error(
+                "File validation failed:",
+                file.originalname,
+                "Invalid type:",
+                file.mimetype,
+                "Extension:",
+                fileExtension
+            );
+            return cb(new Error("Invalid file type. Only CSV files are allowed."));
+        }
+
+        console.log(
+            "File validation passed:",
+            file.originalname,
+            "Type:",
+            file.mimetype
+        );
+        return cb(null, true);
+    },
+    limits: {
+        fileSize: 100 * 1024 * 1024, // 100 MB in bytes
     },
 });
 

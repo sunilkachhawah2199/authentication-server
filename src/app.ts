@@ -5,9 +5,9 @@ import express, { type Request, type Response } from 'express';
 import cors from 'cors';
 import authRoutes from './routes/authRoutes';
 import { verifyToken } from './middleware/authMiddleware';
-import pdfRoutes from './routes/pdfRoutes';
 import adminRoutes from './routes/admin/admin';
-import userRoutes from './routes/agentRoutes';
+import agentRoutes from './routes/agentRoutes';
+import userRoutes from './routes/userRoutes';
 
 const app = express();
 const port = process.env.PORT ?? 4000;
@@ -36,8 +36,8 @@ app.use("/admin", adminRoutes);
 
 // Protected routes --> Middleware to verify token
 app.use(verifyToken);
+app.use("/agent", agentRoutes);
 app.use("/user", userRoutes);
-app.use("/upload", pdfRoutes);
 
 
 app.listen(port, () => {

@@ -2,7 +2,7 @@ import { Request, Response } from "express";
 import { uploadPdfService } from "../services/pdfService";
 
 // Route handler for PDF uploads
-export const uploadPdfController = async (req: Request, res: Response) => {
+export const insuranceController = async (req: Request, res: Response) => {
     console.log("Upload request received");
 
     // No need to check for files here as validateFileUpload middleware already does this

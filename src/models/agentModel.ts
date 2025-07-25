@@ -1,6 +1,7 @@
 export enum AgentType {
     INSURANCE,
-    INVOICE
+    INVOICE,
+    VOICE
 }
 
 export interface IAgentRegister {

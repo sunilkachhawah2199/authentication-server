@@ -1,6 +1,6 @@
 import { AiProcessRequest, UploadResult } from "../models/fileModel";
 import { uploadFileToS3 } from "../utils/s3";
-import { extractorService } from "./extractorService";
+import { extractorService } from "./agentService";
 
 // Function to generate unique session folder
 const generateSessionFolder = (): string => {

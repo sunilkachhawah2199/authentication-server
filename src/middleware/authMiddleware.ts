@@ -3,6 +3,7 @@ import { NextFunction, Request, Response } from "express"
 import { sign, verify, JwtPayload } from "jsonwebtoken"
 
 const JWT_SECRET = process.env.JWT_SECRET || "";
+const ADMIN_EMAIL = process.env.ADMIN_EMAIL || "admin@vidur.in";
 
 // Extend Express Request interface to include user property
 declare global {

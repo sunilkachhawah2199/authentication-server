@@ -52,6 +52,7 @@ export const findByEMail = async (email: string): Promise<IUserRegister | null> 
 }
 
 
+// add new user to firestore
 export const insertUser = async (userData: IUserRegister): Promise<User> => {
     try {
         // uuid generate for users

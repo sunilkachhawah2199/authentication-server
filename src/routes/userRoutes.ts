@@ -7,19 +7,7 @@ import { insuranceController } from "../controllers/pdfController";
 
 const router = Router();
 
-
-// Use the error handling middleware chain
-router.post("/insurance",
-    (req, res, next) => pdfUpload.array("pdfs")(req, res, (err) => handleMulterError(err, req, res, next)),
-    validateFileUpload,
-    insuranceController
-);
-
-// process CSV with binary file
-router.post("/invoice",
-    csvSingleUpload.single('csv'),
-    handleMulterError,
-    processInvoiceController
-);
+// fetch agent of
+router.get("/fetch-agents", fetchUserAgentController);
 
 export default router;

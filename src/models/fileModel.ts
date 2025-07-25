@@ -13,8 +13,14 @@ export interface UploadResult {
     files: any[];
 }
 
-// request body for ai process api
+// request body for insurance ai
 export interface AiProcessRequest {
     email: string,
     folderUrl: string
+}
+
+// request body for invoice ai
+export interface InvoiceAGentRequest {
+    email: string
+    file: Buffer | string  // Can be either Buffer or string
 }
