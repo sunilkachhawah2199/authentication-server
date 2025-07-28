@@ -8,6 +8,8 @@ router.use(validateApiKey)
 
 // add new agent
 router.post("/create-agent", createAgentController);
+
+// get all agent
 router.get("/all-agents", getAllAgentController);
 
 // add agent to user
