@@ -88,7 +88,7 @@ export const fetchUserAgents = async (email: string) => {
             if (!agent) {
                 continue;
             }
-            agents.push(agent);
+            agents.push(agent[0]);
         }
         return agents;
 

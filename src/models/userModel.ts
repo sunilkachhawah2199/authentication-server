@@ -51,6 +51,28 @@ export const findByEMail = async (email: string): Promise<IUserRegister | null> 
     }
 }
 
+// find user by uuid
+export const findByUuid = async (uuid: string): Promise<IUserRegister | null> => {
+    try {
+        const user = await db().collection(FIREBASE_COLLECTIONS.USERS).where('uuid', '==', uuid).get();
+        if (user.empty) {
+            return null;
+        }
+
+        // Get the first matching document and include the document ID
+        const userDoc = user.docs[0];
+        const userData = userDoc.data() as IUserRegister;
+
+        // Log the user data for debugging
+        console.log("User found:", userData);
+
+        return userData;
+    } catch (err) {
+        console.log(err);
+        throw new Error("Error finding user by email");
+    }
+}
+
 
 // add new user to firestore
 export const insertUser = async (userData: IUserRegister): Promise<User> => {

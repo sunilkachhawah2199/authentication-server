@@ -3,6 +3,8 @@ import { BadRequestError } from "../../exceptions/applicationErrors";
 import { Request, Response } from "express";
 import { createAgentService, getAllAgentService } from "../../services/agentService";
 import { addAgentToUserService } from "../../services/userService";
+import { createOrganization } from "../../services/organizationService";
+import { Organization } from "../../models/organizationModel";
 
 export const createAgentController = async (req: Request, res: Response) => {
     try {
@@ -62,5 +64,31 @@ export const addAgentToUserController = async (req: Request, res: Response) => {
             success: false,
             message: error.message || "Internal server error"
         });
+    }
+}
+
+// create organization controller
+export const createOrganizationController = async (req: Request, res: Response) => {
+    try {
+        const { name, logo, description } = req.body;
+        if (!name || !logo || !description) {
+            throw new BadRequestError("please provide org name, logo, description")
+        }
+        const org: Organization = {
+            name,
+            logo,
+            description
+        }
+        const organization = await createOrganization(org);
+        return res.status(200).json({
+            message: "Organization created successfully",
+            organization
+        });
+    } catch (err: any) {
+        console.log("Error creating organization", err.message);
+        return res.status(500).json({
+            message: "Error creating organization",
+            error: err.message
+        })
     }
 }
