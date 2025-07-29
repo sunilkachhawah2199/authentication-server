@@ -3,7 +3,7 @@ import { BadRequestError } from "../../exceptions/applicationErrors";
 import { Request, Response } from "express";
 import { createAgentService, getAllAgentService } from "../../services/agentService";
 import { addAgentToUserService } from "../../services/userService";
-import { createOrganization } from "../../services/organizationService";
+import { addUserInOrganization, createOrganization } from "../../services/organizationService";
 import { Organization } from "../../models/organizationModel";
 
 export const createAgentController = async (req: Request, res: Response) => {
@@ -88,6 +88,27 @@ export const createOrganizationController = async (req: Request, res: Response) 
         console.log("Error creating organization", err.message);
         return res.status(500).json({
             message: "Error creating organization",
+            error: err.message
+        })
+    }
+}
+
+// connect user and organization
+export const addUserInOrganizationController = async (req: Request, res: Response) => {
+    try {
+        const { email, orgId } = req.body;
+        if (!email || !orgId) {
+            throw new BadRequestError("please provide email and orgId")
+        }
+        const response = await addUserInOrganization(orgId, email);
+        return res.status(200).json({
+            message: "User connected to organization successfully",
+            response
+        });
+    } catch (err: any) {
+        console.log("Error connecting user to organization", err.message);
+        return res.status(500).json({
+            message: "Error connecting user to organization",
             error: err.message
         })
     }

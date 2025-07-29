@@ -2,8 +2,10 @@ import { fetchOrganization, Organization } from "../models/organizationModel";
 import { v4 as uuidv4 } from 'uuid';
 import { FIREBASE_COLLECTIONS } from "../constants/firestore";
 import { db } from "../utils/firebase_admin_sdk";
-import { findByUuid, IUserRegister } from "../models/userModel";
+import { findByEMail } from "../services/userService";
+
 import { updateUser } from "./userService";
+import { IUserRegister } from "../models/userModel";
 
 export const createOrganization = async (org: Organization) => {
     try {
@@ -28,17 +30,17 @@ export const createOrganization = async (org: Organization) => {
 // find organization by id
 export const findOrganizationById = async (orgId: string): Promise<fetchOrganization | null> => {
     try {
-        const org = await db().collection(FIREBASE_COLLECTIONS.USERS).where('orgId', '==', orgId).get();
+        const org = await db().collection(FIREBASE_COLLECTIONS.ORGANIZATIONS).where('orgId', '==', orgId).get();
         if (org.empty) {
             return null;
         }
         const orgData = org.docs[0].data() as fetchOrganization;
-        const op = {
+        const op: fetchOrganization = {
             orgId: orgData.orgId,
             name: orgData.name,
             logo: orgData.logo,
             description: orgData.description,
-        } as fetchOrganization
+        }
         return op;
     } catch (err: any) {
         console.log(`orgnization not found with ${orgId}`)
@@ -47,9 +49,9 @@ export const findOrganizationById = async (orgId: string): Promise<fetchOrganiza
 }
 
 // add orgnization field in user
-export const addUserInOrganization = async (orgId: string, uuid: string) => {
+export const addUserInOrganization = async (orgId: string, email: string) => {
     try {
-        const user: IUserRegister | null = await findByUuid(uuid);
+        const user: IUserRegister | null = await findByEMail(email);
         if (!user) {
             throw new Error("User not found");
         }

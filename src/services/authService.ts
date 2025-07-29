@@ -1,5 +1,5 @@
 import { generateToken } from "../middleware/authMiddleware";
-import { findByEMail, insertUser, IUserLogin, IUserRegister, User, Tool } from "../models/userModel";
+import { IUserLogin, IUserRegister, User } from "../models/userModel";
 import {
     UserExistsError,
     InvalidCredentialsError
@@ -8,9 +8,7 @@ import {
     DatabaseQueryError
 } from "../exceptions/databaseErrors";
 import bcrypt from 'bcryptjs';
-import { getAgentByIdService } from "./agentService";
-import { db } from "../utils/firebase_admin_sdk";
-import { FIREBASE_COLLECTIONS } from "../constants/firestore";
+import { findByEMail, insertUser } from "./userService";
 
 
 export const loginService = async (user: IUserLogin): Promise<{ token: string, user: User }> => {
@@ -42,6 +40,8 @@ export const loginService = async (user: IUserLogin): Promise<{ token: string, u
             email: userData.email,
             name: userData.name,
             organization: userData.organization,
+            uuid: userData.uuid,
+            agents: userData.agents || []
         }
 
         // token generation
@@ -104,6 +104,8 @@ export const signupService = async (user: IUserRegister): Promise<User> => {
             email: userData.email,
             name: userData.name,
             organization: userData.organization,
+            uuid: userData.uuid,
+            agents: userData.agents || []
         };
     } catch (error: any) {
         // Log the error for debugging

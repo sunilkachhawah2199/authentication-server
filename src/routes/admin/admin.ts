@@ -1,5 +1,5 @@
 import { validateApiKey } from "../../middleware/apiKeyMiddleware";
-import { addAgentToUserController, createAgentController, createOrganizationController, getAllAgentController } from "../../controllers/admin/adminController";
+import { addAgentToUserController, addUserInOrganizationController, createAgentController, createOrganizationController, getAllAgentController } from "../../controllers/admin/adminController";
 import { Router } from "express";
 
 const router = Router();
@@ -19,6 +19,9 @@ router.post("/add-agent", addAgentToUserController);
 
 // create organization
 router.post("/create-organization", createOrganizationController);
+
+// add user to organization
+router.post("/add-user-to-organization", addUserInOrganizationController);
 
 
 export default router;
