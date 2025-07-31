@@ -6,13 +6,27 @@ import { uploadPdfService } from "../services/pdfService";
 
 // Route handler for insurance api
 export const insuranceController = async (req: Request, res: Response) => {
-    console.log("Upload request received");
-
-    // No need to check for files here as validateFileUpload middleware already does this
 
     try {
+        console.log("Upload request received");
+
+        // Access query parameter
+        const { agentId } = req.query; // Use req.query for query parameters
+
+        console.log("Agent ID received:", agentId);
+
+        // Validate that agentId is provided
+        if (!agentId) {
+            return res.status(400).json({
+                status: false,
+                message: "Agent ID is required as a query parameter",
+                error: "MISSING_AGENT_ID"
+            });
+        }
+
+        // No need to check for files here as validateFileUpload middleware already does this
         // Get user email from the request object (added by verifyToken middleware)
-        if (!req.user || !req.user.email) {
+        if (!req.user || !req.user.email || !req.user.agents.includes(agentId as string)) {
             console.error("Upload failed: User not authenticated properly");
             return res.status(401).json({
                 status: false,
@@ -49,7 +63,10 @@ export const insuranceController = async (req: Request, res: Response) => {
 // process invoice with binary file
 export const processInvoiceController = async (req: Request, res: Response) => {
     try {
-        if (!req.user) {
+        const { agentId } = req.query; // Use req.query for query parameters
+        console.log("Agent ID received:", agentId);
+
+        if (!req.user || !req.user.agents.includes(agentId as string)) {
             return res.status(401).json({
                 success: false,
                 message: "User not authenticated"
