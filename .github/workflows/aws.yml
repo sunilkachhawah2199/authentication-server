@@ -41,7 +41,7 @@ env:
     ecs/task-definition.json # set this to the path to your Amazon ECS task definition
     # file, e.g. .aws/task-definition.json
   CONTAINER_NAME:
-    insurance-authentication-4000-tcp # set this to the name of the container in the
+    insurance-authentication # set this to the name of the container in the
     # containerDefinitions section of your task definition
 
 permissions:
