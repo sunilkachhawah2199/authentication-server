@@ -33,7 +33,7 @@ export const generateToken = (user: User) => {
         return sign(payload, JWT_SECRET, { expiresIn: "24h" });
     }
     catch (err: any) {
-        // console.log(err);
+        console.log(err);
         throw new Error("Error generating token");
     }
 }
@@ -50,12 +50,12 @@ export const verifyToken = (req: Request, res: Response, next: NextFunction) => 
         // Extract token from "Bearer <token>" format
         const token = authHeader.startsWith('Bearer ') ? authHeader.slice(7) : authHeader;
 
-        // console.log("token: ", token);
-        // console.log("JWT_SECRET: ", JWT_SECRET);
+        console.log("token: ", token);
+        console.log("JWT_SECRET: ", JWT_SECRET);
 
         try {
             const decoded = verify(token, JWT_SECRET) as JwtPayload;
-            // console.log("decoded: ", decoded);
+            console.log("decoded: ", decoded);
 
             // Add user data to request object
             req.user = {
@@ -75,7 +75,7 @@ export const verifyToken = (req: Request, res: Response, next: NextFunction) => 
         }
     }
     catch (err: any) {
-        // console.log(err);
+        console.log(err);
         return res.status(500).json({
             message: err.message
         })

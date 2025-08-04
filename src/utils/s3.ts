@@ -36,7 +36,7 @@ export const uploadFileToS3 = async (
             sizeKB: (file.size / 1024).toFixed(2),
         };
     } catch (error) {
-        // console.error("Error uploading to S3:", error);
+        console.error("Error uploading to S3:", error);
         throw new Error(`Failed to upload ${file.originalname} to S3`);
     }
 };

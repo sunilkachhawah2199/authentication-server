@@ -8,12 +8,12 @@ import { uploadPdfService } from "../services/pdfService";
 export const insuranceController = async (req: Request, res: Response) => {
 
     try {
-        // console.log("Upload request received");
+        console.log("Upload request received");
 
         // Access query parameter
         const { agentId } = req.query; // Use req.query for query parameters
 
-        // console.log("Agent ID received:", agentId);
+        console.log("Agent ID received:", agentId);
 
         // Validate that agentId is provided
         if (!agentId) {
@@ -27,7 +27,7 @@ export const insuranceController = async (req: Request, res: Response) => {
         // No need to check for files here as validateFileUpload middleware already does this
         // Get user email from the request object (added by verifyToken middleware)
         if (!req.user || !req.user.email || !req.user.agents.includes(agentId as string)) {
-            // console.error("Upload failed: User not authenticated properly");
+            console.error("Upload failed: User not authenticated properly");
             return res.status(401).json({
                 status: false,
                 message: "User not authenticated properly",
@@ -36,21 +36,21 @@ export const insuranceController = async (req: Request, res: Response) => {
         }
 
         const userEmail = req.user.email;
-        // console.log(`Processing upload for user: ${userEmail}`);
+        console.log(`Processing upload for user: ${userEmail}`);
 
         // upload all the pdf file to s3 bucket, passing the user's email
         const result = uploadPdfService(req.files as Express.Multer.File[], userEmail);
 
         // forward this request to AI backend with folder url.
         // .........this part is pending
-        // console.log("request sent to ai")
+        console.log("request sent to ai")
 
         return res.status(200).json({
             status: true,
             message: `${(req.files as Express.Multer.File[]).length} files uploaded successfully, you will get response over your email: ${userEmail} in some time.`
         });
     } catch (error: any) {
-        // console.error("Error during S3 upload:", error);
+        console.error("Error during S3 upload:", error);
         return res.status(error.statusCode || 500).json({
             status: false,
             message: error.message || "Failed to upload files to cloud",
@@ -64,7 +64,7 @@ export const insuranceController = async (req: Request, res: Response) => {
 export const processInvoiceController = async (req: Request, res: Response) => {
     try {
         const { agentId } = req.query; // Use req.query for query parameters
-        // console.log("Agent ID received:", agentId);
+        console.log("Agent ID received:", agentId);
 
         if (!req.user || !req.user.agents.includes(agentId as string)) {
             return res.status(401).json({
@@ -88,7 +88,7 @@ export const processInvoiceController = async (req: Request, res: Response) => {
         return res.status(200).json(result);
 
     } catch (err: any) {
-        // console.log("Error in processing CSV: ", err.message);
+        console.log("Error in processing CSV: ", err.message);
 
         if (err instanceof BadRequestError) {
             return res.status(400).json({

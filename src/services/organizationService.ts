@@ -19,10 +19,10 @@ export const createOrganization = async (org: Organization) => {
         })
         const save = await docRef.get()
         const orgData = save.data();
-        // console.log("agent created with id:", orgUuid);
+        console.log("agent created with id:", orgUuid);
         return orgData;
     } catch (err: any) {
-        // console.log("Error creating organization", err.message);
+        console.log("Error creating organization", err.message);
         throw new Error(`Error in creating organization: ${err.message}`);
     }
 }
@@ -43,7 +43,7 @@ export const findOrganizationById = async (orgId: string): Promise<fetchOrganiza
         }
         return op;
     } catch (err: any) {
-        // console.log(`orgnization not found with ${orgId}`)
+        console.log(`orgnization not found with ${orgId}`)
         throw new Error(`orgnization not found with ${orgId}`)
     }
 }
@@ -69,7 +69,7 @@ export const addUserInOrganization = async (orgId: string, email: string) => {
 
 
     } catch (err: any) {
-        // console.log(`org id: ${orgId} can't be updated in user table`);
+        console.log(`org id: ${orgId} can't be updated in user table`);
         throw new Error(`error in adding orgnization in user table: ${err.message}`);
     }
 }
