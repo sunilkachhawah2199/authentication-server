@@ -10,6 +10,10 @@ import agentRoutes from './routes/agentRoutes';
 import userRoutes from './routes/userRoutes';
 import { logMiddleware } from './middleware/loggerMiddleware';
 
+import swaggerUi from 'swagger-ui-express';
+import { swaggerSpec } from './utils/swagger';
+
+
 const app = express();
 const port = process.env.PORT ?? 4000;
 
@@ -19,7 +23,34 @@ app.use(express.json());
 // Enable CORS for all routes
 app.use(cors());
 
+// Swagger Route
+// Mount Swagger only in non-production environments
+if (process.env.NODE_ENV !== 'production') {
+    app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
+}
+
 // health check route
+/**
+ * @swagger
+ * /health:
+ *   get:
+ *     summary: health check endpoint
+ *     responses:
+ *       200:
+ *         description: Greeting message
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                 status:
+ *                   type: boolean
+ *                 timestamp:
+ *                   type: string
+ *                   format: date-time
+ */
 app.get('/health', (req: Request, res: Response) => {
     return res.status(200).json({
         message: "Health Check passed",
