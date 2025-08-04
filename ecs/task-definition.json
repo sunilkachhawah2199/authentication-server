@@ -118,6 +118,5 @@
   },
   "registeredAt": "2025-08-01T10:41:26.669Z",
   "registeredBy": "arn:aws:iam::010438504697:user/sunil_vidur",
-  "enableFaultInjection": false,
   "tags": []
 }
