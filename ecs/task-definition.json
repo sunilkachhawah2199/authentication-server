@@ -33,7 +33,7 @@
         },
         {
           "name": "AWS_REGION",
-          "valueFrom": "arn:aws:secretsmanager:ap-south-1:010438504697:secret:AWS_REGION::"
+          "valueFrom": "arn:aws:secretsmanager:ap-south-1:010438504697:secret:prod/agent/authentication-server-XyrRNu:AWS_REGION::"
         },
         {
           "name": "AWS_S3_BUCKET",
