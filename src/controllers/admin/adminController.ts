@@ -29,7 +29,7 @@ export const createAgentController = async (req: Request, res: Response) => {
         const createdAgent = await createAgentService(agent)
         return res.status(200).json(createdAgent);
     } catch (err: any) {
-        console.log("Error creating agent", err.message);
+        // console.log("Error creating agent", err.message);
         return res.status(500).json({
             message: "Error creating agent",
             error: err.message
@@ -43,7 +43,7 @@ export const getAllAgentController = async (req: Request, res: Response) => {
         const agents = await getAllAgentService();
         return res.status(200).json(agents);
     } catch (err: any) {
-        console.log("Error getting agent", err.message);
+        // console.log("Error getting agent", err.message);
         return res.status(500).json({
             message: "Error getting agent",
             error: err.message
@@ -55,7 +55,7 @@ export const getAllAgentController = async (req: Request, res: Response) => {
 export const addAgentToUserController = async (req: Request, res: Response) => {
     try {
         const { email, agentId } = req.body;
-        console.log(agentId)
+        // console.log(agentId)
         const response = await addAgentToUserService(email, agentId);
         return res.status(200).json(response);
     } catch (error: any) {
@@ -85,7 +85,7 @@ export const createOrganizationController = async (req: Request, res: Response) 
             organization
         });
     } catch (err: any) {
-        console.log("Error creating organization", err.message);
+        // console.log("Error creating organization", err.message);
         return res.status(500).json({
             message: "Error creating organization",
             error: err.message
@@ -106,7 +106,7 @@ export const addUserInOrganizationController = async (req: Request, res: Respons
             response
         });
     } catch (err: any) {
-        console.log("Error connecting user to organization", err.message);
+        // console.log("Error connecting user to organization", err.message);
         return res.status(500).json({
             message: "Error connecting user to organization",
             error: err.message

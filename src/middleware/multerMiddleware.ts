@@ -6,7 +6,7 @@ import path from "path";
 export const handleMulterError = (err: any, req: Request, res: Response, next: NextFunction): Response | void => {
     if (err instanceof multer.MulterError) {
         // A Multer error occurred when uploading
-        console.error("Multer error:", err.code, err.message);
+        // console.error("Multer error:", err.code, err.message);
 
         let statusCode = 400;
         let message = "File upload error";
@@ -35,7 +35,7 @@ export const handleMulterError = (err: any, req: Request, res: Response, next: N
         });
     } else if (err) {
         // An unknown error occurred
-        console.error("Unknown upload error:", err);
+        // console.error("Unknown upload error:", err);
         return res.status(500).json({
             status: false,
             message: "An unexpected error occurred during file upload",
@@ -70,14 +70,14 @@ export const pdfUpload = multer({
         const fileExtension = path.extname(file.originalname).toLowerCase();
 
         if (!allowedMimeTypes.includes(file.mimetype) || fileExtension !== ".pdf") {
-            console.error(
-                "File validation failed:",
-                file.originalname,
-                "Invalid type:",
-                file.mimetype,
-                "Extension:",
-                fileExtension
-            );
+            // console.error(
+            //     "File validation failed:",
+            //     file.originalname,
+            //     "Invalid type:",
+            //     file.mimetype,
+            //     "Extension:",
+            //     fileExtension
+            // );
             // Instead of silently rejecting, we'll store the error for later handling
             if (!req.fileValidationErrors) {
                 req.fileValidationErrors = [];
@@ -91,12 +91,12 @@ export const pdfUpload = multer({
             return;
         }
 
-        console.log(
-            "File validation passed:",
-            file.originalname,
-            "Type:",
-            file.mimetype
-        );
+        // console.log(
+        //     "File validation passed:",
+        //     file.originalname,
+        //     "Type:",
+        //     file.mimetype
+        // );
         return cb(null, true);
     },
     limits: {
@@ -114,23 +114,23 @@ export const csvSingleUpload = multer({
         const fileExtension = path.extname(file.originalname).toLowerCase();
 
         if (!allowedMimeTypes.includes(file.mimetype) && fileExtension !== ".csv") {
-            console.error(
-                "File validation failed:",
-                file.originalname,
-                "Invalid type:",
-                file.mimetype,
-                "Extension:",
-                fileExtension
-            );
+            // console.error(
+            //     "File validation failed:",
+            //     file.originalname,
+            //     "Invalid type:",
+            //     file.mimetype,
+            //     "Extension:",
+            //     fileExtension
+            // );
             return cb(new Error("Invalid file type. Only CSV files are allowed."));
         }
 
-        console.log(
-            "File validation passed:",
-            file.originalname,
-            "Type:",
-            file.mimetype
-        );
+        // console.log(
+        //     "File validation passed:",
+        //     file.originalname,
+        //     "Type:",
+        //     file.mimetype
+        // );
         return cb(null, true);
     },
     limits: {
