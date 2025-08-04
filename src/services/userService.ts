@@ -19,11 +19,11 @@ export const findByEMail = async (email: string): Promise<IUserRegister | null> 
         const userData = userDoc.data() as IUserRegister;
 
         // Log the user data for debugging
-        console.log("User found:", userData);
+        // console.log("User found:", userData);
 
         return userData;
     } catch (err) {
-        console.log(err);
+        // console.log(err);
         throw new Error("Error finding user by email");
     }
 }
@@ -48,11 +48,11 @@ export const findByUuid = async (uuid: string): Promise<User | null> => {
         }
 
         // Log the user data for debugging
-        console.log("User found:", userData);
+        // console.log("User found:", userData);
 
         return userOp;
     } catch (err) {
-        console.log(err);
+        // console.log(err);
         throw new Error("Error finding user by uuid");
     }
 }
@@ -63,7 +63,7 @@ export const insertUser = async (userData: IUserRegister): Promise<User> => {
     try {
         // uuid generate for users
         const uuid = uuidv4();
-        console.log("myUuid", uuid);
+        // console.log("myUuid", uuid);
         const { email, name, password, organization } = userData;
 
         // Insert user into Firebase Firestore
@@ -77,7 +77,7 @@ export const insertUser = async (userData: IUserRegister): Promise<User> => {
             updatedAt: new Date()
         });
 
-        console.log("User inserted with ID:", userRef.id);
+        // console.log("User inserted with ID:", userRef.id);
 
         const savedUser = {
             email,
@@ -89,7 +89,7 @@ export const insertUser = async (userData: IUserRegister): Promise<User> => {
         // Return the user data without password for security
         return savedUser;
     } catch (err) {
-        console.log(err);
+        // console.log(err);
         throw new Error("Error inserting user");
     }
 }
@@ -122,7 +122,7 @@ export const updateUser = async (user: IUserRegister): Promise<IUserRegister> =>
         return updatedUserDoc.data() as IUserRegister;
 
     } catch (err: any) {
-        console.log("error in updating profile", err.message);
+        // console.log("error in updating profile", err.message);
         throw new Error(`Error in updating profile: ${err.message}`);
     }
 }
@@ -140,7 +140,7 @@ export const addAgentToUserService = async (email: string, agentId: string[]) =>
         let userAgents = user.agents || [];
         for (let id in agentId) {
             const agent = await getAgentByIdService(agentId[id]);
-            console.log("agent ", agent)
+            // console.log("agent ", agent)
             if (!agent) {
                 throw new Error("Agent not found");
             }
@@ -153,7 +153,7 @@ export const addAgentToUserService = async (email: string, agentId: string[]) =>
         return updatedUser;
 
     } catch (error: any) {
-        console.error("Error adding agent to user", error.message);
+        // console.error("Error adding agent to user", error.message);
         throw new Error(`Error adding agent to user: ${error.message}`);
     }
 }
@@ -182,7 +182,7 @@ export const fetchUserAgents = async (email: string) => {
         return agents;
 
     } catch (err: any) {
-        console.error("Error fetching user agents", err.message);
+        // console.error("Error fetching user agents", err.message);
         throw new Error(`Error fetching user agents: ${err.message}`);
     }
 }
@@ -197,7 +197,7 @@ export const getUserOrganization = async (email: string) => {
         const organization = await findOrganizationById(user.organization);
         return organization;
     } catch (err: any) {
-        console.error("Error fetching user organization", err.message);
+        // console.error("Error fetching user organization", err.message);
         throw new Error(`Error fetching user organization: ${err.message}`);
     }
 }
