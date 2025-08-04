@@ -1,0 +1,123 @@
+{
+  "taskDefinitionArn": "arn:aws:ecs:ap-south-1:010438504697:task-definition/insurance-authentication-server:5",
+  "containerDefinitions": [
+    {
+      "name": "insurance-authentication",
+      "image": "010438504697.dkr.ecr.ap-south-1.amazonaws.com/insurance/authentication-server:v0.5",
+      "cpu": 0,
+      "portMappings": [
+        {
+          "name": "insurance-authentication-4000-tcp",
+          "containerPort": 4000,
+          "hostPort": 4000,
+          "protocol": "tcp",
+          "appProtocol": "http"
+        }
+      ],
+      "secrets": [
+        {
+          "name": "JWT_SECRET",
+          "valueFrom": "arn:aws:secretsmanager:ap-south-1:010438504697:secret:prod/agent/authentication-server-XyrRNu:JWT_SECRET::"
+        },
+        {
+          "name": "NODE_ENV",
+          "valueFrom": "arn:aws:secretsmanager:ap-south-1:010438504697:secret:prod/agent/authentication-server-XyrRNu:NODE_ENV::"
+        },
+        {
+          "name": "AWS_ACCESS_KEY_ID",
+          "valueFrom": "arn:aws:secretsmanager:ap-south-1:010438504697:secret:prod/agent/authentication-server-XyrRNu:AWS_ACCESS_KEY_ID::"
+        },
+        {
+          "name": "AWS_SECRET_ACCESS_KEY",
+          "valueFrom": "arn:aws:secretsmanager:ap-south-1:010438504697:secret:prod/agent/authentication-server-XyrRNu:AWS_SECRET_ACCESS_KEY::"
+        },
+        {
+          "name": "AWS_REGION",
+          "valueFrom": "arn:aws:secretsmanager:ap-south-1:010438504697:secret:AWS_REGION::"
+        },
+        {
+          "name": "AWS_S3_BUCKET",
+          "valueFrom": "arn:aws:secretsmanager:ap-south-1:010438504697:secret:prod/agent/authentication-server-XyrRNu:AWS_S3_BUCKET::"
+        },
+        {
+          "name": "INTERNAL_API_KEY",
+          "valueFrom": "arn:aws:secretsmanager:ap-south-1:010438504697:secret:prod/agent/authentication-server-XyrRNu:INTERNAL_API_KEY::"
+        },
+        {
+          "name": "AI_URL",
+          "valueFrom": "arn:aws:secretsmanager:ap-south-1:010438504697:secret:prod/agent/authentication-server-XyrRNu:AI_URL::"
+        },
+        {
+          "name": "FIREBASE_SERVICE_ACC_PRIVATE_KEY",
+          "valueFrom": "arn:aws:secretsmanager:ap-south-1:010438504697:secret:prod/agent/authentication-server-XyrRNu:FIREBASE_SERVICE_ACC_PRIVATE_KEY::"
+        },
+        {
+          "name": "FIREBASE_CLIENT_ID",
+          "valueFrom": "arn:aws:secretsmanager:ap-south-1:010438504697:secret:prod/agent/authentication-server-XyrRNu:FIREBASE_CLIENT_ID::"
+        }
+      ],
+      "essential": true,
+      "environment": [],
+      "environmentFiles": [],
+      "mountPoints": [],
+      "volumesFrom": [],
+      "ulimits": [],
+      "logConfiguration": {
+        "logDriver": "awslogs",
+        "options": {
+          "awslogs-group": "/ecs/insurance-authentication-server",
+          "awslogs-create-group": "true",
+          "awslogs-region": "ap-south-1",
+          "awslogs-stream-prefix": "ecs"
+        },
+        "secretOptions": []
+      },
+      "systemControls": []
+    }
+  ],
+  "family": "insurance-authentication-server",
+  "executionRoleArn": "arn:aws:iam::010438504697:role/ecsTaskExecutionRole",
+  "networkMode": "awsvpc",
+  "revision": 5,
+  "volumes": [],
+  "status": "ACTIVE",
+  "requiresAttributes": [
+    {
+      "name": "com.amazonaws.ecs.capability.logging-driver.awslogs"
+    },
+    {
+      "name": "ecs.capability.execution-role-awslogs"
+    },
+    {
+      "name": "com.amazonaws.ecs.capability.ecr-auth"
+    },
+    {
+      "name": "com.amazonaws.ecs.capability.docker-remote-api.1.19"
+    },
+    {
+      "name": "ecs.capability.execution-role-ecr-pull"
+    },
+    {
+      "name": "com.amazonaws.ecs.capability.docker-remote-api.1.18"
+    },
+    {
+      "name": "ecs.capability.task-eni"
+    },
+    {
+      "name": "com.amazonaws.ecs.capability.docker-remote-api.1.29"
+    }
+  ],
+  "placementConstraints": [],
+  "compatibilities": ["EC2", "FARGATE"],
+  "requiresCompatibilities": ["FARGATE"],
+  "cpu": "2048",
+  "memory": "4096",
+  "runtimePlatform": {
+    "cpuArchitecture": "X86_64",
+    "operatingSystemFamily": "LINUX"
+  },
+  "registeredAt": "2025-08-01T10:41:26.669Z",
+  "registeredBy": "arn:aws:iam::010438504697:user/sunil_vidur",
+  "enableFaultInjection": false,
+  "tags": []
+}
