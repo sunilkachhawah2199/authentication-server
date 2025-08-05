@@ -7,6 +7,7 @@ import { AiProcessRequest, InvoiceAGentRequest } from "../models/fileModel";
 import { BadRequestError } from "../exceptions/applicationErrors";
 import { extratorAPI, invoiceAPI } from "../constants/endpoint";
 import FormData from 'form-data';
+import logger from "../utils/logger";
 
 
 // create new agent
@@ -23,11 +24,10 @@ export const createAgentService = async (agent: IAgentRegister) => {
         const save = await docRef.get()
         const agentData = save.data();
 
-        console.log("Agent created with ID:", docRef.id);
 
         return agentData;
     } catch (err: any) {
-        console.log("Error creating agent", err.message);
+        logger.error("Error creating agent ", err.message);
         throw new Error(`Error in creating agent: ${err.message}`);
     }
 }
@@ -50,7 +50,7 @@ export const getAllAgentService = async (): Promise<IAgentRegisterResponse[]> =>
 
         return agentData;
     } catch (err: any) {
-        console.log("Error in getting all agent", err.message);
+        logger.error("Error in getting all agent :", err.message);
         throw new Error(`Error in getting agents: ${err.message}`);
     }
 }
@@ -58,9 +58,7 @@ export const getAllAgentService = async (): Promise<IAgentRegisterResponse[]> =>
 // admin system
 export const getAgentByIdService = async (agentId: string) => {
     try {
-        console.log("agentId in get agent service", agentId)
         const agent = await db().collection(FIREBASE_COLLECTIONS.AGENTS).where("agentId", "==", agentId).get();
-        console.log(agent.docs[0].data())
         const agentData = agent.docs.map((doc) => {
             const data = doc.data();
             return {
@@ -77,7 +75,7 @@ export const getAgentByIdService = async (agentId: string) => {
 
         return agentData;
     } catch (err: any) {
-        console.log("agent not exist with this id:", err.message);
+        logger.error("agent not exist with this id: ", err.message);
         throw new Error(`agent not exist with this id: ${err.message}`);
     }
 }
@@ -90,33 +88,19 @@ export const extractorService = async (request: AiProcessRequest): Promise<void>
             throw new BadRequestError("provide email and folderUrl to process extractor api")
         }
 
-        console.log(`request came in extratcor ai ${email} || ${folderUrl}`)
+        logger.info(`request came in extratcor ai ${email} || ${folderUrl}`)
         // call ai process api
         const aiProcessResponse = await axios.post(`${extratorAPI}`, {
             email: email,
             s3_folder_url: folderUrl
         })
-        console.log("extractor service response", aiProcessResponse.data)
+        logger.info("extractor service response: ", aiProcessResponse.data)
         return;
 
     }
     catch (err: any) {
-        console.log(`Extractor service error: ${err.name} - ${err.message}`);
-
-        // Add more detailed error logging
-        if (err.response) {
-            // The request was made and the server responded with a status code
-            // that falls out of the range of 2xx
-            console.log("Error response data:", err.response.data);
-            console.log("Error response status:", err.response.status);
-            console.log("Error response headers:", err.response.headers);
-        } else if (err.request) {
-            // The request was made but no response was received
-            console.log("Error request:", err.request);
-        }
-
         // Instead of crashing the application, return false and log the error
-        console.error("Failed to process extraction request:", err);
+        logger.error("Failed to process extraction request:", err);
         return;
     }
 }
@@ -129,7 +113,7 @@ export const invoiceAgentService = async (request: InvoiceAGentRequest) => {
             throw new BadRequestError("provide email and file to process invoice ai")
         }
 
-        console.log(`request came in invoice ai ${email} || ${file}`)
+        logger.info(`request came in invoice ai ${email} || ${file}`)
         const url = invoiceAPI
         const body: InvoiceAGentRequest = {
             email: email,
@@ -137,7 +121,7 @@ export const invoiceAgentService = async (request: InvoiceAGentRequest) => {
         }
 
         // Log the request body for debugging
-        console.log('Request body:', JSON.stringify(body, null, 2));
+        logger.info('Request body:', JSON.stringify(body, null, 2));
 
         // Create form data
         const form = new FormData();
@@ -156,17 +140,14 @@ export const invoiceAgentService = async (request: InvoiceAGentRequest) => {
         })
 
         if (res.data.detail) {
-            console.log('API Error Details:', res.data.detail);
+            logger.error('API Error Details:', res.data.detail);
             throw new Error(Array.isArray(res.data.detail) ? res.data.detail[0] : res.data.detail);
         }
-
-        console.log("Invoice API response:", res.data)
 
         return res.data;
 
     } catch (err: any) {
-        console.log(err)
-        console.log("Error in invoice agent service:", err.message);
+        logger.error(`Error in invoice agent service: ${err}`);
         throw new Error(`Error processing invoice: ${err.message}`);
     }
 }

@@ -1,5 +1,6 @@
 import { UploadedFile } from "../models/fileModel";
 import { PutObjectCommand, S3Client } from "@aws-sdk/client-s3";
+import logger from "./logger";
 
 // Configure AWS S3
 export const s3 = new S3Client({
@@ -36,7 +37,7 @@ export const uploadFileToS3 = async (
             sizeKB: (file.size / 1024).toFixed(2),
         };
     } catch (error) {
-        console.error("Error uploading to S3:", error);
+        logger.error("Error uploading to S3:", error);
         throw new Error(`Failed to upload ${file.originalname} to S3`);
     }
 };

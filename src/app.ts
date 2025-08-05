@@ -8,10 +8,11 @@ import { verifyToken } from './middleware/authMiddleware';
 import adminRoutes from './routes/admin/admin';
 import agentRoutes from './routes/agentRoutes';
 import userRoutes from './routes/userRoutes';
-import { logMiddleware } from './middleware/loggerMiddleware';
 
 import swaggerUi from 'swagger-ui-express';
 import { swaggerSpec } from './utils/swagger';
+import logger from './utils/logger';
+import { logMiddleware } from './middleware/loggerMiddleware';
 
 
 const app = express();
@@ -60,7 +61,6 @@ app.get('/health', (req: Request, res: Response) => {
 });
 
 app.use(logMiddleware)
-
 // Public routes --> No need to verify token
 app.use("/auth", authRoutes);
 
@@ -75,5 +75,5 @@ app.use("/user", userRoutes);
 
 
 app.listen(port, () => {
-    console.info(`[server]: Server is Running at http://localhost:${port}`);
+    logger.info(`[server]: Server is Running at http://localhost:${port}`);
 });

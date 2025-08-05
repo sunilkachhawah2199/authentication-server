@@ -1,3 +1,4 @@
+import logger from "../utils/logger";
 import { User } from "../models/userModel";
 import { NextFunction, Request, Response } from "express"
 import { sign, verify, JwtPayload } from "jsonwebtoken"
@@ -33,7 +34,7 @@ export const generateToken = (user: User) => {
         return sign(payload, JWT_SECRET, { expiresIn: "24h" });
     }
     catch (err: any) {
-        console.log(err);
+        logger.error(`error in token generation: ${err}`);
         throw new Error("Error generating token");
     }
 }
@@ -50,12 +51,15 @@ export const verifyToken = (req: Request, res: Response, next: NextFunction) => 
         // Extract token from "Bearer <token>" format
         const token = authHeader.startsWith('Bearer ') ? authHeader.slice(7) : authHeader;
 
-        console.log("token: ", token);
-        console.log("JWT_SECRET: ", JWT_SECRET);
 
         try {
             const decoded = verify(token, JWT_SECRET) as JwtPayload;
-            console.log("decoded: ", decoded);
+
+            logger.info({
+                task: "token verified successfully",
+                user: decoded.email,
+                uuid: decoded.uuid
+            });
 
             // Add user data to request object
             req.user = {
@@ -69,13 +73,14 @@ export const verifyToken = (req: Request, res: Response, next: NextFunction) => 
             return next();
         }
         catch (err: any) {
+            logger.error(`error in token verification: ${err}`);
             return res.status(401).json({
                 message: "Session Expired"
             })
         }
     }
     catch (err: any) {
-        console.log(err);
+        logger.error(`error in verifyToken: ${err}`);
         return res.status(500).json({
             message: err.message
         })

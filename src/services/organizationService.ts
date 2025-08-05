@@ -6,6 +6,7 @@ import { findByEMail } from "../services/userService";
 
 import { updateUser } from "./userService";
 import { IUserRegister } from "../models/userModel";
+import logger from "../utils/logger";
 
 export const createOrganization = async (org: Organization) => {
     try {
@@ -19,10 +20,9 @@ export const createOrganization = async (org: Organization) => {
         })
         const save = await docRef.get()
         const orgData = save.data();
-        console.log("agent created with id:", orgUuid);
         return orgData;
     } catch (err: any) {
-        console.log("Error creating organization", err.message);
+        logger.error(`Error creating organization ${err}`);
         throw new Error(`Error in creating organization: ${err.message}`);
     }
 }
@@ -42,8 +42,8 @@ export const findOrganizationById = async (orgId: string): Promise<fetchOrganiza
             description: orgData.description,
         }
         return op;
-    } catch (err: any) {
-        console.log(`orgnization not found with ${orgId}`)
+    } catch (err) {
+        logger.error(`error in finding organization: ${err}`)
         throw new Error(`orgnization not found with ${orgId}`)
     }
 }
@@ -69,7 +69,7 @@ export const addUserInOrganization = async (orgId: string, email: string) => {
 
 
     } catch (err: any) {
-        console.log(`org id: ${orgId} can't be updated in user table`);
+        logger.error(`error in adding user in organization: ${err}`);
         throw new Error(`error in adding orgnization in user table: ${err.message}`);
     }
 }

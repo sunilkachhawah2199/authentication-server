@@ -2,7 +2,7 @@ import logger from '../utils/logger';
 import { Request, Response, NextFunction } from 'express';
 
 export const logMiddleware = (req: Request, res: Response, next: NextFunction) => {
-    const { method, originalUrl, body } = req;
+    const { method, originalUrl, body, headers } = req;
     const start = Date.now();
 
     const oldSend = res.send.bind(res);
@@ -16,32 +16,24 @@ export const logMiddleware = (req: Request, res: Response, next: NextFunction) =
     res.on('finish', () => {
         const duration = Date.now() - start;
 
-        // Format response body for better readability
-        let formattedResponse = responseBody;
-        try {
-            // Try to parse as JSON and format it nicely
-            if (typeof responseBody === 'string') {
-                const parsed = JSON.parse(responseBody);
-                formattedResponse = JSON.stringify(parsed, null, 2);
-            } else if (typeof responseBody === 'object') {
-                formattedResponse = JSON.stringify(responseBody, null, 2);
-            }
-        } catch (error) {
-            // If it's not valid JSON, keep it as is
-            formattedResponse = responseBody;
+        // Create a structured log object
+        const logData = {
+            method,
+            url: originalUrl,
+            statusCode: res.statusCode,
+            duration: `${duration}ms`,
+            requestBody: body,
+            responseBody: responseBody,
+            userAgent: headers['user-agent'],
+            timestamp: new Date().toISOString()
+        };
+
+        // Log based on status code
+        if (res.statusCode >= 400) {
+            logger.error('HTTP Request Failed', logData);
+        } else {
+            logger.info('HTTP Request Completed', logData);
         }
-
-        logger.info(`
-            --- REQUEST ---
-            Method: ${method}
-            URL: ${originalUrl}
-            Body: ${JSON.stringify(body, null, 2)}
-
-            --- RESPONSE ---
-            Status: ${res.statusCode}
-            Response: ${formattedResponse}
-            Duration: ${duration}ms
-            `);
     });
 
     next();
